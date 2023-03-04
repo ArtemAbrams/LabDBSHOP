@@ -1,0 +1,39 @@
+﻿@model LabOOP.Models.Feedback
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<div class="container">
+    <h1 class="my-4">Create</h1>
+    <div class="card">
+        <div class="card-header">
+            <h4 class="card-title">Feedback</h4>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" asp-route-orderId="@ViewBag.orderId">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="Description" class="form-label"></label>
+                    <textarea asp-for="Description" class="form-control" style="height: 150px;" id="description-input"></textarea>
+                    <span asp-validation-for="Description" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="my-4">
+        <a asp-action="Index" asp-route-id="@ViewBag.orderId" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        document.getElementById('description-input').focus();
+    </script>
+}

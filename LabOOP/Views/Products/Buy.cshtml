@@ -1,0 +1,74 @@
+﻿@model LabOOP.Models.Product
+@{
+    ViewData["Title"] = "Buy";
+}
+<h1>Buy</h1>
+
+<h3>Are you sure you want to buy this?</h3>
+
+@*<div>
+    <h4>Product</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.WeightInKilograms)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.WeightInKilograms)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Country)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Country.Name)
+        </dd>
+    </dl>
+</div>*@
+<div class="col-md-4">
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header">
+            <h4 class="my-0 font-weight-normal">@Model.Name</h4>
+        </div>
+        <div class="card-body">
+            <ul class="list-unstyled mt-3 mb-4">
+                <li>@Html.DisplayNameFor(Model => Model.Price): @Model.Price.ToString("C")</li>
+                <li>@Html.DisplayNameFor(Model => Model.Description): @Model.Description</li>
+                <li>@Html.DisplayNameFor(Model => Model.WeightInKilograms): @Model.WeightInKilograms</li>
+                <li>@Html.DisplayNameFor(Model => Model.Country): @Model.Country.Name</li>
+            </ul>
+            <form asp-action="ConfirmBuy" method="post">
+               <input type="hidden" name="orderId" value="@ViewBag.OrderId" />
+               <input type="hidden" name="productId" value="@Model.Id" />
+               <button type="submit" class="btn btn-primary">Confirm Purchase</button>
+           </form>
+        </div>
+    </div>
+</div>
+<div>
+    <a asp-action="AddProduct" asp-route-id="@ViewBag.OrderId">Back To List</a>
+
+@*    <form asp-action="ConfirmBuy" method="post">
+            <input type="hidden" name="orderId" value="@ViewBag.OrderId" />
+            <input type="hidden" name="productId" value="@Model.Id" />
+            <button type="submit" class="btn btn-primary">Confirm Purchase</button>
+     </form>*@
+</div>
+

@@ -1,0 +1,65 @@
+﻿@model IEnumerable<LabOOP.Models.Product>
+@{
+    ViewData["Title"] = "AddProduct";
+}
+
+<div class="container">
+    <h1 class="text-center">Choose the products</h1>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Name)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Price)
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Price)
+                            </td>
+                            <td>
+                                <form asp-action="Buy" method="post">
+                                    <input type="hidden" name="productId" value="@item.Id" />
+                                    <input type="hidden" name="orderId" value="@ViewBag.OrderId" />
+                                    <button type="submit" class="btn btn-primary">Buy</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="d-flex justify-content-between">
+                <form asp-controller="Orders" asp-action="ConfirmPurchase" method="post">
+                    <input type="hidden" name="orderId" value="@ViewBag.OrderId" />
+                    <button type="submit" class="btn btn-success">Confirm Purchase</button>
+                </form>
+                <form asp-controller="Orders" asp-action="Edit" method="get">
+                    <input type="hidden" name="id" value="@ViewBag.OrderId" />
+                    <button type="submit" class="btn btn-secondary">Change Delivery</button>
+                </form>
+
+                <form asp-action="ListOfProducts" method="get">
+                    <input type="hidden" name="id" value="@ViewBag.OrderId" />
+                    <button type="submit" class="btn btn-info">View Selected Products</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

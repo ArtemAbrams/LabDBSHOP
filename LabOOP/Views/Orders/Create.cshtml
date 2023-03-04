@@ -1,0 +1,33 @@
+﻿@model LabOOP.Models.Order
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Веберіть доставщика </h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+             <div class="form-group">
+                <label asp-for="Address" class="control-label">Delivery address</label>
+                <input asp-for="Address" class="form-control" />
+                <span asp-validation-for="Address" class="text-danger"></span>
+             </div>
+            <div class="form-group">
+                <label asp-for="DeliverId" class="control-label">Deliver Information</label>
+                <select asp-for="DeliverId" class="form-control" asp-items="ViewBag.DeliverId" required></select>
+                <span asp-validation-for="DeliverId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Choose" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

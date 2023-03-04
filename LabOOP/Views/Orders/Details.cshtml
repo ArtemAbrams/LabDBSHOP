@@ -1,0 +1,84 @@
+﻿@model IEnumerable<LabOOP.Models.ProductsOrder>
+@{
+    ViewData["Title"] = "ListOfProducts";
+    decimal totalPrice = 0;
+    decimal IntermediateAmount = 0m;
+}
+<div>
+    <h4>Deliver</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            Phone Number:
+        </dt>
+        <dd class="col-sm-10">
+            @ViewBag.Deliver?.PhoneNumber
+        </dd>
+        <dt class="col-sm-2">
+            How to deliver:
+        </dt>
+        <dd class="col-sm-10">
+            @ViewBag.Deliver?.Transport.Name
+        </dd>
+        <dt class="col-sm-2">
+            Name:
+        </dt>
+        <dd class="col-sm-10">
+            @ViewBag.Deliver?.Name
+        </dd>
+        <dt class="col-sm-2">
+            Surname:
+        </dt>
+        <dd class="col-sm-10">
+            @ViewBag.Deliver?.Surname
+        </dd>
+    </dl>
+</div>
+ <div class="container">
+     <div class="row">
+        <div class="col-12">
+            <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+        </div>
+     </div>
+  <div class="row mt-3">
+    <div class="col-12">
+       <h1>List of selected products</h1>
+   </div>
+  </div>
+  <div class="row mt-3">
+    <div class="col-12">
+      <div class="table-responsive">
+       <table class="table table-bordered table-striped">
+         <thead class="thead-dark">
+           <tr>
+             <th scope="col" style="position: sticky; top: 0; z-index: 1;">Product Name</th>
+             <th scope="col" style="position: sticky; top: 0; z-index: 1;">Price</th>
+             <th scope="col" style="position: sticky; top: 0; z-index: 1;">Description</th>
+             <th scope="col" style="position: sticky; top: 0; z-index: 1;">Weight</th>
+             <th scope="col" style="position: sticky; top: 0; z-index: 1;">Country</th>
+             <th scope="col" style="position: sticky; top: 0; z-index: 1;">Count</th>
+             <th scope="col" style="position: sticky; top: 0; z-index: 1;">Total Price</th>
+          </tr>
+ </thead>
+ <tbody>
+ @foreach (var item in Model)
+  {
+    <tr>
+      <td>@item.Product.Name</td>
+      <td>@item.Product.Price.ToString("C")</td>
+      <td>@item.Product.Description</td>
+      <td>@item.Product.WeightInKilograms</td>
+      <td>@item.Product.Country.Name</td>
+      <td>@item.Count</td>
+     @{
+       IntermediateAmount = item.Count * item.Product.Price;
+       totalPrice += IntermediateAmount;
+      }
+    <td>@IntermediateAmount.ToString("C")</td>
+   </tr>
+ }
+ <tr>
+    <td colspan="6" class="text-right font-weight-bold">Total Price:</td>
+    <td>@totalPrice.ToString("C")</td>
+ </tr>
+</tbody>

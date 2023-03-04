@@ -1,0 +1,51 @@
+﻿@model IEnumerable<LabOOP.Models.ProductsOrder>
+@{
+    ViewData["Title"] = "ListOfProducts";
+    decimal totalPrice = 0;
+    decimal IntermediateAmount = 0m;
+}
+
+<div class="container">
+    <h1>List of selected products</h1>
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4">
+                <div class="card mb-4 shadow-sm">
+                    <div class="card-header">
+                        <h4 class="my-0 font-weight-normal">@item.Product.Name</h4>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mt-3 mb-4">
+                            <li>@Html.DisplayNameFor(item => item.Product.Price): @item.Product.Price.ToString("C")</li>
+                            <li>@Html.DisplayNameFor(item => item.Product.Description): @item.Product.Description</li>
+                            <li>@Html.DisplayNameFor(item => item.Product.WeightInKilograms): @item.Product.WeightInKilograms</li>
+                            <li>@Html.DisplayNameFor(item => item.Product.Country): @item.Product.Country.Name</li>
+                            <li>@Html.DisplayNameFor(item => item.Count): @item.Count</li>
+                            @{
+                                IntermediateAmount = item.Count * item.Product.Price;
+                                totalPrice += IntermediateAmount;
+                            }
+                            <li>Total Price for this type of product: @IntermediateAmount.ToString("C")</li>
+                        </ul>
+                        <form method="get" asp-action="DeleteProductOrder">
+                            <input type="hidden" name="id" value="@item.Id" />
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <h4>Total Price: @totalPrice.ToString("C")</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <a class="btn btn-primary" asp-action="AddProduct" asp-route-id="@ViewBag.orderId">Back to List</a>
+        </div>
+    </div>
+</div>
