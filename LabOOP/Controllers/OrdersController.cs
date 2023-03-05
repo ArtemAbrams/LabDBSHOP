@@ -85,7 +85,14 @@ namespace LabOOP.Controllers
                 .Include(d => d.Deliver)
                 .ThenInclude(b => b.Transport)
                 .FirstOrDefaultAsync(m => m.Id == id);
-            var productsInOrder = await _context.ProductsOrders.Where(elem => elem.OrderId == id).Include(o => o.Product).ThenInclude(b => b.Country).ToListAsync();
+
+            var productsInOrder = await _context.ProductsOrders.
+                Where(elem => elem.OrderId == id).
+                Include(o => o.Product).
+                ThenInclude(b => b.Country).
+                ToListAsync();
+
+            ViewBag.orderId = id;
             if (order == null)
             {
                 return NotFound();

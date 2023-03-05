@@ -3,6 +3,7 @@
     ViewData["Title"] = "ListOfProducts";
     decimal totalPrice = 0;
     decimal IntermediateAmount = 0m;
+    int orderId = @ViewBag.orderId;
 }
 <div>
     <h4>Deliver</h4>
@@ -82,3 +83,40 @@
     <td>@totalPrice.ToString("C")</td>
  </tr>
 </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+ </div>
+
+@section scripts
+    {
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load("current", { packages: ["corechart"] });
+        google.charts.setOnLoadCallback(drawChart);
+        function drawChart() {
+            $.get('/api/Chart/ProductList/@orderId', function (ProductList) {
+                var data = google.visualization.arrayToDataTable(ProductList);
+                var options = {
+                    title: 'Загальна ціна продуктів у замовленні',
+                    width: 900,
+                    height: 500,
+                    legend: { position: 'none' },
+                    chartArea: { width: '50%' },
+                    hAxis: {
+                        title: 'Ціна',
+                        minValue: 0
+                    },
+                    vAxis: {
+                        title: 'Назва продукту'
+                    }
+                };
+                var chart = new google.visualization.PieChart(document.getElementById('barchart_values'));
+                chart.draw(data, options);
+            });
+        }
+    </script>
+}
+<div id="barchart_values"></div>
