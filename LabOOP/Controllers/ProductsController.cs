@@ -180,19 +180,26 @@ namespace LabOOP.Controllers
             {
                 return Problem("Entity set 'DBSHOPContext.Products'  is null.");
             }
-            var product = await _context.Products.Include(o => o.ProductsOrders).ThenInclude(o=> o.Order).ThenInclude(a => a.Feedbacks).FirstOrDefaultAsync(elem => elem.Id == id);
+            var product = await _context.Products.
+                Include(o => o.ProductsOrders).
+                FirstOrDefaultAsync(elem => elem.Id == id);
             if (product != null)
             {
-                foreach(var item in product.ProductsOrders)
+                var orderIdlist = product.
+                    ProductsOrders
+                    .Select(o => o.OrderId)
+                    .ToList();
+                foreach(var item in orderIdlist)
                 {
-                    if (item.Order != null)
+                    var order = await _context.Orders.Include(o => o.Feedbacks).Include(a => a.ProductsOrders).FirstOrDefaultAsync(elem => elem.Id == item);
+                    if(order != null) 
                     {
-                        foreach (var feedbacks in item.Order.Feedbacks)
-                            _context.Remove(feedbacks);
-                        _context.Remove(item.Order);
+                        foreach(var feed in order.Feedbacks)
+                            _context.Remove(feed);
+                        foreach (var ord in order.ProductsOrders)
+                            _context.Remove(ord);
+                        _context.Remove(order);
                     }
-                    _context.Remove(item);
-                    await _context.SaveChangesAsync();
                 }
                 _context.Products.Remove(product);
             }
