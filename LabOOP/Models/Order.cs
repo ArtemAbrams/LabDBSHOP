@@ -20,7 +20,7 @@ namespace LabOOP.Models
         public int? DeliverId { get; set; }
 
         [Required(ErrorMessage = "Адреса має бути")]
-        [StringLength(40, MinimumLength =7)]
+        [StringLength(40, MinimumLength = 7)]
         public string? Address { get; set; }
 
         public virtual Client? Client { get; set; }

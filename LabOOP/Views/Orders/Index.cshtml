@@ -3,7 +3,27 @@
 @{
     ViewData["Title"] = "Orders";
 }
-
+<section>
+    <h2>Експорт інформації в файл</h2>
+    <form method="post" action="@Url.Action("Export", "Orders")">
+        <button type="submit" class="button button--download">
+            <i class="fas fa-download"></i> Завантажити дані
+        </button>
+    </form>
+</section>
+<div>
+    <h3 class="mb-4 text-lg font-medium text-gray-700">Оберіть excel-файл для завантаження</h3>
+    @using (Html.BeginForm("Import", "Orders", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+    {
+        <div class="mb-4">
+            <label for="fileExcel" class="block mb-2 text-sm font-medium text-gray-700">Виберіть файл</label>
+            <input type="file" name="fileExcel" id="fileExcel" class="border rounded-md py-2 px-3 text-sm text-gray-700" />
+        </div>
+        <div>
+            <button type="submit" class="px-4 py-2 font-medium text-white bg-blue-500 rounded-md hover:bg-blue-600 transition-colors duration-300">Завантажити</button>
+        </div>
+    }
+</div>
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-12">

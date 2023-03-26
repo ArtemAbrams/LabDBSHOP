@@ -8,6 +8,8 @@ using Microsoft.EntityFrameworkCore;
 using LabOOP.Models;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using ClosedXML.Excel;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace LabOOP.Controllers
 {
@@ -134,9 +136,6 @@ namespace LabOOP.Controllers
             {
                 return NotFound();
             }
-            var list = from elem in _context.ProductsOrders.Where(o => o.Id == id).ToList() select elem.OrderId ;
-            ViewBag.CountOfOrder = deliver.Orders.Count;
-            ViewBag.OrderData = deliver.Orders.ToList();
             return View(deliver);
         }
 
@@ -149,41 +148,49 @@ namespace LabOOP.Controllers
             {
                 return Problem("Entity set 'DBSHOPContext.Delivers'  is null.");
             }
-            var deliver = await _context.Delivers.Include(o=>o.Orders).ThenInclude(o=>o.Feedbacks).FirstOrDefaultAsync(elem => elem.Id == id);
-            if (deliver != null)
-            {
-                foreach(var order in deliver.Orders)
+                var deliver = await _context.Delivers
+               .Include(d => d.Orders)
+                .ThenInclude(o => o.ProductsOrders)
+                 .Include(d => d.Orders)
+                  .ThenInclude(o => o.Feedbacks)
+                  .FirstOrDefaultAsync(d => d.Id == id);
+                if (deliver == null)
                 {
+                    return NotFound();
+                }
+                foreach (var order in deliver.Orders)
+                {
+                    foreach (var productOrder in order.ProductsOrders)
+                    {
+                        _context.Remove(productOrder);
+                    }
+
                     foreach (var feedback in order.Feedbacks)
                     {
                         _context.Remove(feedback);
-                        await _context.SaveChangesAsync();
                     }
+                    _context.Remove(order);
                 }
-                deliver = await _context.Delivers.Include(o => o.Orders).ThenInclude(o => o.ProductsOrders).FirstOrDefaultAsync(elem => elem.Id == id);
-                if (deliver != null) 
-                {
-                    foreach (var order in deliver.Orders)
-                    {
-                        foreach (var productOrders in order.ProductsOrders)
-                        {
-                            _context.Remove(productOrders);
-                            await _context.SaveChangesAsync();
-                        }
-                        _context.Remove(order);
-                        await _context.SaveChangesAsync();
-                    }
-                    _context.Delivers.Remove(deliver);
-                }
-                _context.Delivers.Remove(deliver);
-            }        
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                _context.Remove(deliver);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
         }
-
         private bool DeliverExists(int id)
         {
           return _context.Delivers.Any(e => e.Id == id);
         }
+        [AcceptVerbs("Get", "Accept")]
+        public IActionResult VerifyName(string PhoneNumber)
+        {
+            bool isNameExist = _context.Delivers.Any(x => x.PhoneNumber == PhoneNumber);
+
+            if (isNameExist)
+            {
+                return Json("Name already exists.");
+            }
+
+            return Json(true);
+        }
+
     }
 }

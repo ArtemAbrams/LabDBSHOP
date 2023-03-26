@@ -47,8 +47,6 @@ namespace LabOOP.Models
 
             modelBuilder.Entity<Country>(entity =>
             {
-                entity.Property(e => e.Id).ValueGeneratedNever();
-
                 entity.Property(e => e.Name).HasMaxLength(10);
             });
 

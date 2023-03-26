@@ -33,6 +33,10 @@ namespace LabOOP.Controllers
         [HttpGet("ProductList/{orderId}")]
         public JsonResult ProductList(int? orderId)
         {
+            if(orderId == null)
+            {
+                return new JsonResult(null);
+            }
             var allProducts = _context.ProductsOrders
              .Where(po => po.OrderId == orderId)
              .Join(_context.Products, po => po.ProductId, p => p.Id, (po, p) => new { p.Name, p.Price, po.Count })

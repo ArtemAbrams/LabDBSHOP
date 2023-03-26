@@ -9,13 +9,14 @@ using LabOOP.Models;
 using LabOOP.ViewModels;
 using System.Security.Cryptography.X509Certificates;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Authentication.OAuth.Claims;
 
 namespace LabOOP.Controllers
 {
     public class ProductsController : Controller
     {
         private readonly DBSHOPContext _context;
-
+        private int InitialAmount = 1;
         public ProductsController(DBSHOPContext context)
         {
             _context = context;
@@ -189,22 +190,28 @@ namespace LabOOP.Controllers
                     ProductsOrders
                     .Select(o => o.OrderId)
                     .ToList();
-                foreach(var item in orderIdlist)
+                foreach(var Id in orderIdlist)
                 {
-                    var order = await _context.Orders.Include(o => o.Feedbacks).Include(a => a.ProductsOrders).FirstOrDefaultAsync(elem => elem.Id == item);
-                    if(order != null) 
-                    {
-                        foreach(var feed in order.Feedbacks)
-                            _context.Remove(feed);
-                        foreach (var ord in order.ProductsOrders)
-                            _context.Remove(ord);
-                        _context.Remove(order);
-                    }
+
+                    DeleteOrders(Id);
                 }
                 _context.Products.Remove(product);
             }
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
+        }
+
+        public void DeleteOrders(int? id)
+        {
+            var order =  _context.Orders.Include(o => o.Feedbacks).Include(a => a.ProductsOrders).FirstOrDefault(elem => elem.Id == id);
+            if (order != null)
+            {
+                foreach (var feed in order.Feedbacks)
+                    _context.Remove(feed);
+                foreach (var ord in order.ProductsOrders)
+                    _context.Remove(ord);
+                _context.Remove(order);
+            }
         }
         [HttpPost]
         public async Task<IActionResult> ConfirmBuy(int orderId, int productId)
@@ -222,7 +229,7 @@ namespace LabOOP.Controllers
                 {
                     OrderId = orderId,
                     ProductId = productId,
-                    Count = 1,
+                    Count = InitialAmount,
                 };
                 _context.ProductsOrders.Add(orderProduct);
                 await _context.SaveChangesAsync();
@@ -262,7 +269,8 @@ namespace LabOOP.Controllers
         [HttpPost]
         public async Task<IActionResult> ConfirmPurchase(int orderId)
         {
-            var productCount = await _context.ProductsOrders.Where(elem => elem.OrderId == orderId).CountAsync();
+            var productCount = await _context.ProductsOrders.
+                Where(elem => elem.OrderId == orderId).CountAsync();
             if (productCount > 0) 
             { 
                var order = await _context.Orders.FirstOrDefaultAsync(elem  => elem.Id == orderId);

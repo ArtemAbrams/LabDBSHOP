@@ -25,7 +25,9 @@ namespace LabOOP.Controllers
             if (id == null)
                 return NotFound();
             ViewBag.orderId = id;
-            var dBSHOPContext = _context.Feedbacks.Include(f => f.Order).Where(e => e.OrderId == id);
+            var dBSHOPContext = _context.Feedbacks.
+                Include(f => f.Order).
+                Where(e => e.OrderId == id);
             return View(await dBSHOPContext.ToListAsync());
         }
 

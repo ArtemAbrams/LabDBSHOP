@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
 
 namespace LabOOP.Models
 {
@@ -13,7 +12,6 @@ namespace LabOOP.Models
         }
 
         public int Id { get; set; }
-
         [Required(ErrorMessage = "Назва товару обов'язкова")]
         [StringLength(10)]
         public string Name { get; set; } = null!;
@@ -27,7 +25,6 @@ namespace LabOOP.Models
         [Required(ErrorMessage = "Опис товару обов'язковий")]
         [StringLength(100)]
         public string? Description { get; set; }
-
         [Required(ErrorMessage = "Вага товару обов'язкова")]
         [Range(0.01, 15000.00, ErrorMessage = "Ціна повинна бути більше 0 та менше за 15000")]
         [RegularExpression(@"^\d+(\.\d{1,2})?$", ErrorMessage = "Невірний формат числа")]

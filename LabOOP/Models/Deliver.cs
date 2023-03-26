@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
@@ -12,12 +13,11 @@ namespace LabOOP.Models
         }
 
         public int Id { get; set; }
-
         [Required(ErrorMessage = "Телефон має бути")]
-        [RegularExpression(@"^\+?380\d{9}$", ErrorMessage = "Номер телефону повинен починатися з +380 або 380 та містити ще 9 цифр")]
-        [StringLength(13, MinimumLength =12)]
+        [RegularExpression(@"^\380\d{9}$", ErrorMessage = "Номер телефону повинен починатися з 380 та містити ще 9 цифр")]
+        [StringLength(13, MinimumLength = 12)]
+        [Remote(action: "VerifyName", controller: "Delivers", AdditionalFields = nameof(PhoneNumber))]
         public string PhoneNumber { get; set; } = null!;
-
         [Required(ErrorMessage = "Транспорт має бути")]
         [Display(Name = "How to deliver")]
         public int? TransportId { get; set; }
@@ -32,6 +32,7 @@ namespace LabOOP.Models
 
         public virtual Transport? Transport { get; set; }
         public virtual ICollection<Order> Orders { get; set; }
+
         public string DisplayText
         {
             get => $"Name: {Name} Surname: {Surname} Transport: {Transport?.Name ?? "N/A"}";
